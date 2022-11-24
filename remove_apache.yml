@@ -1,0 +1,19 @@
+---
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: update repository index
+    dnf:
+      update_cache: yes
+
+  - name: delete httpd package
+    dnf:
+      name: httpd
+      state: absent
+
+  - name: remove php support for htttpd
+    dnf:
+      name: php
+      state: absent
