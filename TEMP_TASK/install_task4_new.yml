@@ -1,0 +1,59 @@
+---
+
+- hosts: all
+  become: true
+  vars:
+    directories:
+      - '~/directory_1'
+      - '~/directory_2'
+      - '~/directory_3'
+    check_path:
+      - '~/directory_1/post_install.yaml'
+      - '~/directory_2/user_config.yml'
+      - '~/directory_3/text_3.txt'
+      - '~/directory_3/text_4.txt'
+  tasks:
+
+  - name: "INSTALL TASK 4: Create 3 directorys on the servers"
+    tags: directory
+    file:
+      path: "{{ directories }}"
+      state: directory
+      mode: '0755'
+      
+  - name: "INSTALL TASK 4: Copy files to the directorys"
+    tags: copy
+    copy:
+      src: "{{ item.name }}"
+      dest: "{{ item.destn }}"
+      owner: root
+      group: root
+      mode: "{{ item.perm }}"
+    loop:
+      - { name: 'post_install.yaml', destn: '~/directory_1/', perm: '755' }
+      - { name: 'user_config.yml', destn: '~/directory_2/', perm: '777' }
+      - { name: 'text_3.txt', destn: '~/directory_3/', perm: '775' } 
+
+  - name: "INSTALL TASK 4: Check path"
+    stat:
+      path: "{{ check_path }}"
+    register: existlist
+#    loop:
+#      - "~/directory_1/post_install.yaml"
+#      - "~/directory_2/user_config.yml"
+#      - "~/directory_3/text_3.txt"
+#      - "~/directory_3/text_4.txt"
+
+  - name: "INSTALL TASK 4: if exists del content"
+    replace:
+      path: "{{ check_path }}"
+      regexp: "^(.+)$"
+      replace: ""
+    when: existlist.results.[{{ item | int}}].stat.exists
+    loop:
+      - 1
+      - 2
+      - 3
+      - 4
+    loop_control:
+      index_var: idx

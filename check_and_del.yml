@@ -1,0 +1,17 @@
+---
+
+# check and del function
+# save in the regiser: checker if the path is exists
+# if exist delete the content by replace it with Nothing
+
+- name: "INSTALL TASK 4.3: check_and_del - check  if {{ item }} exist"
+  stat:
+    path: "{{ item }}"
+  register: checker
+
+- name: "INSTALL TASK 4.3: check_and_del - delete {{ item }} if exist"
+  replace:
+    path: "{{ item }}"
+    regexp: '^(.+)$'
+    replace: ''
+  when: checker.stat.exists == True

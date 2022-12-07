@@ -1,0 +1,32 @@
+---
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: Create a directory on the servers
+    tags: directory
+    file:
+      path: ~/task1dir
+      state: directory
+      mode: '0755'
+
+  - name: copy file - 10-barbican_wsgi_main.conf to the servers
+    tags: copy
+    copy:
+      src: 10-barbican_wsgi_main.conf
+      dest: ~/task1dir
+      owner: root
+      group: root
+      mode: 0644
+
+
+  - name: Change Number of processes
+    tags: change
+    replace:
+      path: ~/task1dir/10-barbican_wsgi_main.conf
+      after: 'processes='
+      before: ' threads'
+      regexp: '^(.+)$'
+      replace: '2'
+      backup: yes

@@ -1,0 +1,38 @@
+---
+
+# Install playblook for Task 1  & Task 2
+# 1. Make a directory task2dir
+# 2. Copy the file 10-barbican_wsgi_main.conf to all (permission 644)
+# 3. Change the value of processes to 2
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: "INSTALL TASK 2: Create a directory task2dir on the servers"
+    tags: task1,task2,directory
+    file:
+      path: ~/task2dir
+      state: directory
+      mode: '0755'
+
+  - name: "INSTALL TASK 2: Copy 10-barbican_wsgi_main.conf to the servers"
+    tags: task1,task2,copy
+    copy:
+      src: 10-barbican_wsgi_main.conf
+      dest: ~/task2dir
+      owner: root
+      group: root
+      mode: '0644'
+
+
+  - name: "INSTALL TASK 2: Change number of processes"
+    tags: task1,task2,change
+    replace:
+      path: ~/task2dir/10-barbican_wsgi_main.conf
+      after: 'processes='
+      before: ' threads'
+      regexp: '^(.+)$'
+      replace: "2"
+#      backup: yes
+#    register: copy_file

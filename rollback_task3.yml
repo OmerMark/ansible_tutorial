@@ -1,0 +1,31 @@
+---
+
+# Rollback playbook for Task 3
+# Remove the block from post-install.yml
+# delete the IPs from the field external_storage_iscsi_ip: & prefix
+
+- hosts: workstations
+  become: true
+  vars:
+    ips:
+      - "10.94.195.20"
+      - '10.94.195.30'
+    playbook_name:
+      - disable-gnocchi-aodh-and-ceilometer.yml
+
+  tasks:
+
+  - name: "ROLLBACK TASK 3: remove the block from post-install.yml"
+    tags: rollback3, rblock
+    blockinfile:
+      path: ~/ansible_tutorial/files/post-install.yml
+      regexp: "{{ playbook_name }}"
+      state: absent
+
+# delete all the ips
+  - name: "ROLLBACK TASK 3: removing IPs in user_config.yml"
+    tags: rollback3, rIP
+    replace:
+      path: ~/ansible_tutorial/files/user_config.yml
+      regexp: "{{ ips }}"
+      replace: ''

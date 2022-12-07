@@ -1,0 +1,32 @@
+---
+
+# Rollback playbook for Task 2
+# 1. Revert the file to its original, which means to return the original value of processes
+# 2. Delete the newly created and copied file.
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: "ROLLBACK TASK 2: Change Number of processes back to 80"
+    tags: task2,change
+    replace:
+      path: ~/task2dir/10-barbican_wsgi_main.conf
+      after: 'processes='
+      before: ' threads'
+      regexp: '^(.+)$'
+      replace: '80'
+
+  - name: "ROLLBACK TASK 2:delete 10-barbican_wsgi_main.conf"
+    tags: task2,delfile
+    file:
+      remote_src: true
+      path: ~/task2dir/10-barbican_wsgi_main.conf
+      state: absent
+
+  - name: "ROLLBACK TASK 2:delete directory task2dir"
+    tags: task2,deldir
+    file:
+      remote_src: true
+      path: ~/task2dir
+      state: absent

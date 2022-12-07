@@ -1,0 +1,271 @@
+---
+- import_playbook: configure-cbis-admin-password.yml
+  tags: [update,scale-out]
+
+- import_playbook: add-pacemaker-op-parameters.yml
+  tags: [update,scale-in,scale-out]
+
+- import_playbook: prevent-cloud-init.yml
+  tags: [update,scale-in,scale-out]
+
+- import_playbook: configure-salt.yml
+  tags: [update,scale-in,scale-out]
+
+- import_playbook: fix-ipsec-configuration.yml
+  tags: [update]
+
+- import_playbook: post-install-changes.yml
+  tags: [update,scale-out]
+
+- import_playbook: configure-cbis-repo.yml
+  tags: [update,scale-out]
+
+- import_playbook: copy-utils.yml
+  tags: [update,scale-in,scale-out]
+
+- import_playbook: configure-overcloudrc.yml
+  tags: [update,scale-out]
+
+- import_playbook: configure-ntp.yml
+  tags: [update,scale-out]
+
+- import_playbook: configure-motd.yml
+  tags: [update,scale-out]
+
+- import_playbook: configure-logrotate.yml
+  tags: [update,scale-out]
+
+- import_playbook: configure-quotas.yml
+  tags: [update]
+
+- import_playbook: configure-cpu-allocation-ratio.yml
+  tags: [update,scale-out]
+
+- import_playbook: configure-dpdk.yml
+  tags: [update,scale-out]
+
+- import_playbook: ovs-dpdk-auto-tune.yml
+  tags: [update,scale-out]
+
+- import_playbook: ovs-dpdk-infra-rate-limit.yml
+  tags: [update,scale-out]
+
+- import_playbook: configure-compute-post.yml
+  tags: [update,scale-out]
+
+- import_playbook: configure-cpu-isolation.yml
+  tags: [update,scale-out]
+
+- import_playbook: configure-irq-pinning.yml
+  tags: [update,scale-out]
+
+- import_playbook: configure-rps.yml
+  tags: [update,scale-out]
+
+- import_playbook: sysctl-settings.yml
+  tags: [update,scale-out]
+
+- import_playbook: configure-live-migration.yml
+  tags: [update,scale-out]
+
+- import_playbook: configure-openstack-config.yml
+  tags: [update,scale-out]
+
+- import_playbook: ceph-post-install.yml
+  tags: [update,scale-in,scale-out]
+
+- import_playbook: configure-local-storage.yml
+  tags: [update,scale-out]
+
+- import_playbook: configure-multiple-pools.yml
+  tags: [update,scale-in,scale-out]
+
+- import_playbook: configure-epa-kernel-params.yml
+  tags: [update,scale-out]
+
+- import_playbook: configure-netapp.yml
+  tags: [update,scale-in,scale-out]
+
+- import_playbook: configure-emc.yml
+  tags: [update,scale-in,scale-out]
+
+- import_playbook: configure-hp3par.yml
+  tags: [update,scale-in,scale-out]
+
+- import_playbook: configure-controller.yml
+  tags: [update,scale-in,scale-out]
+
+- import_playbook: cinder-post-deploy.yml
+  tags: [update,scale-in,scale-out]
+
+- import_playbook: update-ceph-pgs.yml
+  tags: [update,scale-in,scale-out]
+
+- import_playbook: ceph-configure-fast-pool.yml
+  tags: [update,scale-in,scale-out]
+
+- import_playbook: configure-flapping-service.yml
+  tags: [update,scale-out]
+
+- import_playbook: nova-compute-service.yml
+  tags: [update,scale-in,scale-out]
+
+- import_playbook: configure-vfs.yml
+  tags: [update,scale-in,scale-out]
+
+#- import_playbook: configure-nodes-cephfs-share-point.yml
+#  tags: [update,scale-out]
+
+- import_playbook: configure-nova.yml
+  tags: [update,scale-in,scale-out]
+
+- import_playbook: configure-neutron.yml
+  tags: [update,scale-in,scale-out]
+
+- hosts: Control
+  gather_facts: False
+  roles:
+    - haproxy
+  vars:
+    should_restart_haproxy: False
+  tags: [update,scale-out]
+
+- import_playbook: configure-keystone.yml
+  tags: [update,scale-in,scale-out]
+
+- import_playbook: configure-keystone-authtoken.yml
+  tags: [update,scale-in,scale-out]
+
+- import_playbook: zabbix-upgrade.yml
+
+- import_playbook: configure-zabbix.yml
+  tags: [update,scale-in,scale-out]
+
+- import_playbook: zabbix-templates-upgrade.yml
+
+- import_playbook: configure-ceilometer.yml
+  tags: [update]
+
+- import_playbook: configure-alarm-manager-db.yml
+  tags: [update]
+
+- import_playbook: configure-alarm-manager.yml
+  tags: [update,scale-out]
+
+- import_playbook: vitrage-upgrade.yml
+
+- import_playbook: configure-vitrage.yml
+  tags: [update,scale-out]
+
+- import_playbook: vitrage-alarms-purge-post-upgrade.yml
+
+- import_playbook: elk-upgrade.yml
+
+- import_playbook: configure-elk.yml
+  tags: [update,scale-in,scale-out]
+
+- import_playbook: elk/frontend/cbis-setup-custom-facts.yml
+  tags: [update,scale-in,scale-out]
+
+- import_playbook: elk/backend/kibana-dasboard.yml
+  tags: [update,scale-in,scale-out]
+
+- import_playbook: elk/frontend/cbis-monitoring-redis-container.yml
+
+- import_playbook: elk/backend/logstash_reader.yml
+  tags: [update,scale-in,scale-out]
+
+- import_playbook: elk/frontend/cbis-monitoring-agents.yml
+  tags: [update,scale-in,scale-out]
+
+- import_playbook: configure-qos.yml
+  tags: [update,scale-in,scale-out]
+
+- import_playbook: configure-trust.yml
+  tags: [update,scale-in,scale-out]
+
+- import_playbook: lldp-configure.yml
+  tags: [update,scale-in,scale-out]
+
+- import_playbook: configure-disk-cache.yml
+  tags: [update,scale-out]
+
+- import_playbook: configure-zone-and-aggregation.yml
+  tags: [update,scale-in,scale-out]
+
+- import_playbook: configure-overcloud-database-backup.yaml
+  tags: [update,scale-in,scale-out]
+
+- import_playbook: configure-glance.yml
+  tags: [update,scale-in,scale-out]
+
+- import_playbook: configure-barbican.yml
+  tags: [update,scale-in,scale-out]
+
+- import_playbook: configure-barbican-tls.yml
+  tags: [update,scale-in,scale-out]
+
+- import_playbook: numa-aware-live-migration/apply-patch.yml
+  tags: [update,scale-in,scale-out]
+
+- import_playbook: nova-numa-selection.yml
+  tags: [update,scale-in,scale-out]
+
+- import_playbook: configure-heat.yml
+  tags: [update,scale-in,scale-out]
+
+- import_playbook: configure-compute-nova.yml
+  tags: [update,scale-out]
+
+- import_playbook: configure-rabbitmq-monitor.yml
+  tags: [update,scale-in,scale-out]
+
+- import_playbook: monitor_ceph_mgr.yml
+  tags: [update,scale-in,scale-out]
+
+- import_playbook: restart-openstack-services-if-needed.yml
+  tags: [update,scale-in,scale-out]
+
+- import_playbook: configure-ceph-dashboard-haproxy.yml
+  tags: [update,scale-in,scale-out]
+
+- include: nuage-post-install.yml
+  tags: [update,scale-in,scale-out]
+
+- include: recreate-initrmfs.yml
+  tags: [update,scale-out]
+
+- hosts: undercloud
+  become: yes
+  gather_facts: false
+  tasks:
+    - name: make sure all nova services are up
+      shell: python /usr/share/cbis/undercloud/tools/check_services.py
+
+# Raid configuration should always be the last step!!!!
+- import_playbook: configure-raid.yml
+  tags: [update,scale-out]
+
+#- import_playbook: configure-CM.yaml
+#  tags: [update,scale-out,scale-in]
+
+# Configure Novl , - do not place any includes below here.
+- import_playbook: configure-novl-create.yml
+  tags: [update]
+
+- import_playbook: run-novl.yml
+  tags: [update,scale-in,scale-out]
+
+- hosts: undercloud, Control, CephStorage, Compute
+  gather_facts: false
+  vars:
+    flag_file: "/usr/share/cbis/installation_success"
+  tasks:
+    - name: Mark installation as successful (touch {{flag_file}})
+      file: path="{{flag_file}}" state=touch
+      become: yes
+      tags: always
+
+- import_playbook: clean-black-list.yml
+  tags: [update,scale-in,scale-out]
+  

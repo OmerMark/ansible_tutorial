@@ -1,0 +1,99 @@
+---
+# Install playblook for Task 4
+# Create directory_1, directory_2, directory_3
+# Copy
+#	post_install.yaml to directory_1 with permission 755
+#	user_config.yml to directory_2 with permission 777
+#	text_3.txt to directory_3 with permission 775
+# Check if files exists if its is delete its content
+#	post_install.yaml in directory_1
+#	user_config.yml in directory_2
+#	text_3.txt in directory_3
+#	text_4.txt in directory_3
+
+# !!! didnt find a way to use the index of register or to do nested loop
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: "INSTALL TASK 4: Create 3 directorys on the servers"
+    tags: task4,part1,directory
+    file:
+      path: "{{ item }}"
+      state: directory
+      mode: '0755'
+    loop:
+      - "~/directory_1/"
+      - "~/directory_2/"
+      - "~/directory_3/"
+      
+  - name: "INSTALL TASK 4: Copy files to the directorys"
+    tags: task4,part2,copy
+    copy:
+      src: "{{ item.name }}"
+      dest: "{{ item.destn }}"
+      owner: root
+      group: root
+      mode: "{{ item.perm }}"
+    loop:
+      - { name: 'post_install.yaml', destn: '~/directory_1/', perm: '755' }
+      - { name: 'user_config.yml', destn: '~/directory_2/', perm: '777' }
+      - { name: 'text_3.txt', destn: '~/directory_3/', perm: '775' } 
+
+
+  - name: "INSTALL TASK 4: Check if directory_1/post_install.yaml exist"
+    tags: task4,file1,part3
+    stat:
+      path: "~/directory_1/post_install.yaml"
+    register: exist1
+
+  - name: "INSTALL TASK 4: Check if directory_2/user_config.yml exist"
+    tags: task4,file2,part3
+    stat:
+      path: "~/directory_2/user_config.yml"
+    register: exist2
+
+  - name: "INSTALL TASK 4: Check if directory_3/text_3.txt exist"
+    tags: task4,file3,part3
+    stat:
+      path: "~/directory_3/text_3.txt"
+    register: exist3
+
+  - name: "INSTALL TASK 4: Check if directory_4/text_4.txt exist"
+    tags: task4,file3,part3
+    stat:
+      path: "~/directory_3/text_4.txt"
+    register: exist4
+
+  - name: "INSTALL TASK 4: if directory_1/post_install.yaml exist DELETE CONTENT"
+    tags: task4,file1,part3
+    replace:
+      path: "~/directory_1/post_install.yaml"
+      regexp: '^(.+)$'
+      replace: ""
+    when: exist1.stat.exists
+
+  - name: "INSTALL TASK 4: if directory_2/user_config.yml exist DELETE CONTENT"
+    tags: task4,file2,part3
+    replace:
+      path: "~/directory_2/user_config.yml"
+      regexp: '^(.+)$'
+      replace: ""
+    when: exist2.stat.exists
+
+  - name: "INSTALL TASK 4: if directory/text_3.txt exist DELETE CONTENT"
+    tags: task4,file3,part3
+    replace:
+      path: "~/directory_3/text_3.txt"
+      regexp: '^(.+)$'
+      replace: ""
+    when: exist3.stat.exists
+
+  - name: "INSTALL TASK 4: if directory_3/text_4.txt exist DELETE CONTENT"
+    tags: task4,file4,part3
+    replace:
+      path: "~/directory_3/text_4.txt"
+      regexp: "^(.+)$"
+      replace: ""
+    when: exist4.stat.exists
