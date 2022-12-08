@@ -4,7 +4,7 @@
 # Add the block to post-install.yml before '# Configure Novl , - do not place any includes below here.'
 # 2. Add IPs for the field 'external_storage_iscsi_ip:' in user_config.yml
 
-- hosts: workstations
+- hosts: all
   become: true
   vars:
     ips:
@@ -12,22 +12,19 @@
       - 10.94.195.30
   tasks:
 
-# !!! didnt find solution for marker comment
   - name: "INSTALL TASK 3: Adding block to post-install.yml"
     tags: task3,block
     blockinfile:
       path: "~/ansible_tutorial/files/post-install.yml"
       insertbefore: 'Configure Novl , - do not place any includes below here.'
-#      marker: ''
+      marker: "# {mark} ANSIBLE TASK 3"
       block: |
               - import_playbook: disable-gnocchi-aodh-and-ceilometer.yml
                 tags: [update,scale-out]
 
-# !!! I tried to do it with replace to add for exist list no comma in the first one "x.x.x.x ,y.y.y.y z.z.z.z ,w.w.w.w
   - name: "INSTALL TASK 3: Adding IPs in user_config.yml"
     tags: task3,change
     lineinfile:
       path: "~/ansible_tutorial/files/user_config.yml"
-      regexp: '^(external_storage_iscsi_ip: (.*)$)'
-      backrefs: yes
-      line: \1 {{ ips | join(' ,') }}
+      regexp: '^external_storage_iscsi_ip:'
+      line: "external_storage_iscsi_ip: {{ ips | join(' ,') }}"

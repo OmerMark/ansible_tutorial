@@ -7,20 +7,33 @@
 
 - hosts: all
   become: true
+  vars:
+    - file_name: 10-barbican_wsgi_main.conf
+    - value: "2"
   tasks:
 
   - name: "INSTALL TASK 2: Create a directory task2dir on the servers"
     tags: task1,task2,directory
     file:
-      path: ~/task2dir
+      path: ~/task2dir/
       state: directory
       mode: '0755'
 
-  - name: "INSTALL TASK 2: Copy 10-barbican_wsgi_main.conf to the servers"
+  - name: "INSTALL TASK 2: Copy {{ file_name }} to the servers"
     tags: task1,task2,copy
     copy:
-      src: 10-barbican_wsgi_main.conf
+      src: "{{ file_name }}"
       dest: ~/task2dir
+      owner: root
+      group: root
+      mode: '0644'
+
+  - name: "INSTALL TASK 2: Make a backup {{ file_name }}"
+    tags: task1,task2,copy
+    copy:
+      remote_src: yes
+      src: ~/task2dir/{{ file_name }}
+      dest: "~/my_backups/{{ file_name }}.backup"
       owner: root
       group: root
       mode: '0644'
@@ -29,10 +42,8 @@
   - name: "INSTALL TASK 2: Change number of processes"
     tags: task1,task2,change
     replace:
-      path: ~/task2dir/10-barbican_wsgi_main.conf
+      path: "~/task2dir/{{ file_name }}"
       after: 'processes='
       before: ' threads'
-      regexp: '^(.+)$'
-      replace: "2"
-#      backup: yes
-#    register: copy_file
+      regexp: '^(.*)$'
+      replace: "{{ value }}"

@@ -5,28 +5,33 @@
 # 2. Delete the newly created and copied file.
 
 - hosts: all
+  gather_facts: true
   become: true
+  vars:
+    file_name: 10-barbican_wsgi_main.conf
   tasks:
 
   - name: "ROLLBACK TASK 2: Change Number of processes back to 80"
     tags: task2,change
-    replace:
-      path: ~/task2dir/10-barbican_wsgi_main.conf
-      after: 'processes='
-      before: ' threads'
-      regexp: '^(.+)$'
-      replace: '80'
+    copy:
+      remote_src: 'yes'
+      src: "~/my_backups/{{ file_name }}.backup"
+      dest: "~/task2dir/{{ file_name }}"
+      owner: root
+      group: root
+      mode: '0644'
 
-  - name: "ROLLBACK TASK 2:delete 10-barbican_wsgi_main.conf"
+
+  - name: "ROLLBACK TASK 2: delete {{ file_name }}"
     tags: task2,delfile
     file:
-      remote_src: true
-      path: ~/task2dir/10-barbican_wsgi_main.conf
+      remote_src: 'yes'
+      path: "~/task2dir/{{ file_name }}"
       state: absent
 
-  - name: "ROLLBACK TASK 2:delete directory task2dir"
+  - name: "ROLLBACK TASK 2: delete directory task2dir"
     tags: task2,deldir
     file:
-      remote_src: true
+      remote_src: 'yes'
       path: ~/task2dir
       state: absent

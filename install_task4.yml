@@ -1,0 +1,61 @@
+---
+# Install playblook for Task 4
+# 1. Create directory_1, directory_2, directory_3
+#
+# 2.Copy
+#	post_install.yaml to directory_1 with permission 755
+#	user_config.yml to directory_2 with permission 777
+#	text_3.txt to directory_3 with permission 775
+#
+# 3.Check if files exists if its is delete its content
+#	post_install.yaml in directory_1
+#	user_config.yml in directory_2
+#	text_3.txt in directory_3
+#	text_4.txt in directory_3
+
+# !!! didnt find a way to use the index of register for when
+
+- hosts: all
+  become: true
+  vars:
+    directories:
+      - '~/directory_1'
+      - '~/directory_2'
+      - '~/directory_3'
+    check_path:
+      - '~/directory_1/post_install.yaml'
+      - '~/directory_2/user_config.yml'
+      - '~/directory_3/text_3.txt'
+      - '~/directory_3/text_4.txt'
+  tasks:
+
+  - name: "INSTALL TASK 4.1: Create 3 directorys on the servers"
+    tags: task4,part1,directory
+    file:
+      path: "{{ directories }}"
+      state: directory
+      mode: '0755'
+      
+  - name: "INSTALL TASK 4.2: Copy files to the directorys"
+    tags: task4,part2,copy
+    copy:
+      src: "{{ item.name }}"
+      dest: "{{ item.destn }}"
+      owner: root
+      group: root
+      mode: "{{ item.perm }}"
+    loop:
+      - { name: 'post_install.yaml', destn: '~/directory_1/', perm: '755' }
+      - { name: 'user_config.yml', destn: '~/directory_2/', perm: '777' }
+      - { name: 'text_3.txt', destn: '~/directory_3/', perm: '775' } 
+
+#  - name: "INSTALL TASK 4.3: Check if file exists if yes delete its content"
+#    include_tasks: check_and_del.yml
+#    with_items: "{{ check_path }}"
+
+  - name: "INSTALL TASK 4.3: if file exists if yes delete its content"
+    lineinfile:
+      path: "{{ item }}"
+      regexp: '^(.*)$'
+      state: absent
+    with_items: "{{ check_path }}"

@@ -10,8 +10,8 @@
   register: checker
 
 - name: "INSTALL TASK 4.3: check_and_del - delete {{ item }} if exist"
-  replace:
+  lineinfile:
     path: "{{ item }}"
-    regexp: '^(.+)$'
-    replace: ''
+    regexp: '^(.*)$'
+    state: absent
   when: checker.stat.exists == True
